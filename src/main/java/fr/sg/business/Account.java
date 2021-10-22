@@ -1,7 +1,5 @@
 package fr.sg.business;
 
-import java.math.BigDecimal;
-
 public class Account {
     Balance balance;
 
@@ -12,5 +10,9 @@ public class Account {
 
     public Balance getBalance() {
         return this.balance;
+    }
+
+    public void deposit(Amount amount) {
+        balance.add(amount);
     }
 }
