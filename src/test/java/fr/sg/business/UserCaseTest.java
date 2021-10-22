@@ -54,6 +54,18 @@ public class UserCaseTest {
     }
 
     @Test
+    public void should_fail_when_deposing_negative_100_on_an_account() {
+        //Given
+        Balance balance = new Balance();
+        account = new Account(balance);
+
+        Amount deposit = new Amount(new BigDecimal(-100));
+
+        //Then
+        assertThrows(UnauthorizedOperationException.class, () -> account.deposit(deposit));
+    }
+
+    @Test
     public void should_withdraw_100_on_an_account_with_100() {
         //Given
         Balance balance = new Balance();
@@ -71,7 +83,7 @@ public class UserCaseTest {
     }
 
     @Test
-    public void should_fail_when_withdraw_100_on_an_empty_account() {
+    public void should_fail_when_withdrawing_100_on_an_empty_account() {
         //Given
         Balance balance = new Balance();
         account = new Account(balance);
@@ -81,4 +93,22 @@ public class UserCaseTest {
         //Then
         assertThrows(UnauthorizedOperationException.class, () -> account.withdraw(withdraw));
     }
+
+
+    @Test
+    public void should_fail_when_withdrawing_negative_100_from_an_account() {
+        //Given
+        Balance balance = new Balance();
+        account = new Account(balance);
+        Amount deposit = new Amount(new BigDecimal(1000));
+        account.deposit(deposit);
+
+        Amount withdraw = new Amount(new BigDecimal(-100));
+
+        //Then
+        assertThrows(UnauthorizedOperationException.class, () -> account.withdraw(withdraw));
+    }
+
+
+
 }
