@@ -25,10 +25,11 @@ public class Account {
         operationList.add(new Operation(OperationType.DEPOSIT, date, amount));
     }
 
-    public void withdraw(Amount withdraw) {
+    public void withdraw(Amount withdraw, Date date) {
         throwExceptionWhenAmountIsNegative(withdraw);
         throwExceptionIfWithdrawIsSuperiorToBalance(withdraw);
         balance.minus(withdraw);
+        operationList.add(new Operation(OperationType.WITHDRAW, date, withdraw));
     }
 
     private void throwExceptionWhenAmountIsNegative(Amount amount) {

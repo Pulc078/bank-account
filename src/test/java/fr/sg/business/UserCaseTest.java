@@ -77,7 +77,7 @@ public class UserCaseTest {
         Amount withdraw = new Amount(new BigDecimal(100));
 
         //When
-        account.withdraw(withdraw);
+        account.withdraw(withdraw, date);
 
         //Then
         assertEquals(BigDecimal.ZERO, account.getBalance().value);
@@ -88,12 +88,13 @@ public class UserCaseTest {
         //Given
         Balance balance = new Balance();
         account = new Account(balance);
+        Date date = new Date();
 
         //When
         Amount withdraw = new Amount(new BigDecimal(100));
 
         //Then
-        assertThrows(UnauthorizedOperationException.class, () -> account.withdraw(withdraw));
+        assertThrows(UnauthorizedOperationException.class, () -> account.withdraw(withdraw, date));
     }
 
 
@@ -110,7 +111,7 @@ public class UserCaseTest {
         Amount withdraw = new Amount(new BigDecimal(-100));
 
         //Then
-        assertThrows(UnauthorizedOperationException.class, () -> account.withdraw(withdraw));
+        assertThrows(UnauthorizedOperationException.class, () -> account.withdraw(withdraw, date));
     }
 
 
@@ -131,5 +132,28 @@ public class UserCaseTest {
         assertEquals(OperationType.DEPOSIT, account.getOperationList().get(0).getOperationType());
         assertEquals(date, account.getOperationList().get(0).getDate());
     }
+
+
+    @Test
+    public void should_add_an_operation_to_the_account_when_withdrawing_100() {
+        //Given
+        Balance balance = new Balance();
+        account = new Account(balance);
+        Amount deposit = new Amount(new BigDecimal(100));
+        Date date = new Date();
+        account.deposit(deposit, date);
+
+        Amount withdraw = new Amount(new BigDecimal(10));
+
+        //When
+        account.withdraw(withdraw, date);
+
+        //Then
+        assertEquals(2, account.getOperationList().size());
+        assertEquals(withdraw.value, account.getOperationList().get(1).getAmount().value);
+        assertEquals(OperationType.WITHDRAW, account.getOperationList().get(1).getOperationType());
+        assertEquals(date, account.getOperationList().get(1).getDate());
+    }
+
 
 }
