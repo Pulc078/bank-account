@@ -12,4 +12,8 @@ public class Balance {
     public void add(Amount amount) {
         value = this.value.add(amount.value);
     }
+
+    public void minus(Amount withdraw) {
+        value = this.value.subtract(withdraw.value);
+    }
 }

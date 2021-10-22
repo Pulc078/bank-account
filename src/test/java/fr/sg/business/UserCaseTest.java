@@ -19,7 +19,7 @@ public class UserCaseTest {
         account = new Account(balance);
 
         //Then
-        assertEquals(account.getBalance().value, new BigDecimal(0));
+        assertEquals(new BigDecimal(0), account.getBalance().value);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class UserCaseTest {
         account.deposit(deposit);
 
         //Then
-        assertEquals(account.getBalance().value, new BigDecimal(100));
+        assertEquals(new BigDecimal(100), account.getBalance().value);
     }
 
     @Test
@@ -49,6 +49,23 @@ public class UserCaseTest {
         account.deposit(deposit);
 
         //Then
-        assertEquals(account.getBalance().value, new BigDecimal("210.2"));
+        assertEquals(new BigDecimal("210.2"), account.getBalance().value);
+    }
+
+    @Test
+    public void should_withdraw_100_on_an_account_with_100() {
+        //Given
+        Balance balance = new Balance();
+        account = new Account(balance);
+        Amount deposit = new Amount(new BigDecimal(100));
+        account.deposit(deposit);
+
+        Amount withdraw = new Amount(new BigDecimal(100));
+
+        //When
+        account.withdraw(withdraw);
+
+        //Then
+        assertEquals(BigDecimal.ZERO, account.getBalance().value);
     }
 }
