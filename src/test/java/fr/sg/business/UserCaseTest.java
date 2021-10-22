@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserCaseTest {
 
@@ -67,5 +68,17 @@ public class UserCaseTest {
 
         //Then
         assertEquals(BigDecimal.ZERO, account.getBalance().value);
+    }
+
+    @Test
+    public void should_fail_when_withdraw_100_on_an_empty_account() {
+        //Given
+        Balance balance = new Balance();
+        account = new Account(balance);
+
+        Amount withdraw = new Amount(new BigDecimal(100));
+
+        //Then
+        assertThrows(UnauthorizedOperationException.class, () -> account.withdraw(withdraw));
     }
 }

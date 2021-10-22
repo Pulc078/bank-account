@@ -17,6 +17,9 @@ public class Account {
     }
 
     public void withdraw(Amount withdraw) {
+        if(withdraw.value.compareTo(balance.value) > 0){
+            throw new UnauthorizedOperationException();
+        }
         balance.minus(withdraw);
     }
 }
