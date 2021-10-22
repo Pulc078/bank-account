@@ -97,6 +97,26 @@ public class UserCaseTest {
         assertThrows(UnauthorizedOperationException.class, () -> account.withdraw(withdraw, date));
     }
 
+    @Test
+    public void deposing_100_then_withdraw_100_should_leave_a_balance_of_90() {
+        //Given
+        Balance balance = new Balance();
+        account = new Account(balance);
+        Amount deposit = new Amount(new BigDecimal(100));
+        Date dateDepo = new Date();
+        account.deposit(deposit, dateDepo);
+
+        Date dateWith = new Date();
+        Amount withdraw = new Amount(new BigDecimal(10));
+
+        //When
+        account.withdraw(withdraw, dateWith);
+
+        //Then
+        assertEquals(new BigDecimal(90), account.balance.value);
+
+    }
+
 
     @Test
     public void should_fail_when_withdrawing_negative_100_from_an_account() {
@@ -156,7 +176,7 @@ public class UserCaseTest {
     }
 
     @Test
-    public void deposing_1000_then_withdraw_100_should_add_2_operation_in_chronological_order() {
+    public void deposing_100_then_withdraw_100_should_add_2_operation_in_chronological_order() {
         //Given
         Balance balance = new Balance();
         account = new Account(balance);
@@ -181,6 +201,5 @@ public class UserCaseTest {
         assertEquals(OperationType.WITHDRAW, account.getOperationList().get(0).getOperationType());
         assertEquals(dateWith, account.getOperationList().get(0).getDate());
     }
-
 
 }
