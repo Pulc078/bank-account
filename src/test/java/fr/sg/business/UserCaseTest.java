@@ -155,5 +155,32 @@ public class UserCaseTest {
         assertEquals(date, account.getOperationList().get(1).getDate());
     }
 
+    @Test
+    public void deposing_1000_then_withdraw_100_should_add_2_operation_in_chronological_order() {
+        //Given
+        Balance balance = new Balance();
+        account = new Account(balance);
+        Amount deposit = new Amount(new BigDecimal(100));
+        Date dateDepo = new Date();
+        account.deposit(deposit, dateDepo);
+
+        Date dateWith = new Date();
+        Amount withdraw = new Amount(new BigDecimal(10));
+
+        //When
+        account.withdraw(withdraw, dateWith);
+
+        //Then
+        assertEquals(2, account.getOperationList().size());
+
+        assertEquals(deposit.value, account.getOperationList().get(1).getAmount().value);
+        assertEquals(OperationType.DEPOSIT, account.getOperationList().get(1).getOperationType());
+        assertEquals(dateDepo, account.getOperationList().get(1).getDate());
+
+        assertEquals(withdraw.value, account.getOperationList().get(0).getAmount().value);
+        assertEquals(OperationType.WITHDRAW, account.getOperationList().get(0).getOperationType());
+        assertEquals(dateWith, account.getOperationList().get(0).getDate());
+    }
+
 
 }
