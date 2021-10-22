@@ -9,9 +9,11 @@ public class Account {
     Balance balance;
 
     List<Operation> operationList = new LinkedList<>();
+    Statement statement;
 
     public Account(Balance balance) {
         this.balance = balance;
+        statement = new Statement(new LinkedList<>());
 
     }
 
@@ -22,14 +24,22 @@ public class Account {
     public void deposit(Amount amount, Date date) {
         throwExceptionWhenAmountIsNegative(amount);
         balance.add(amount);
-        operationList.add(0, new Operation(OperationType.DEPOSIT, date, amount));
+
+        Operation operation = new Operation(OperationType.DEPOSIT, date, amount);
+        operationList.add(0, operation);
+
+        statement.add(0, new StatementLine(operation, new Amount(balance.value)));
     }
 
-    public void withdraw(Amount withdraw, Date date) {
-        throwExceptionWhenAmountIsNegative(withdraw);
-        throwExceptionIfWithdrawIsSuperiorToBalance(withdraw);
-        balance.minus(withdraw);
-        operationList.add(0, new Operation(OperationType.WITHDRAW, date, withdraw));
+    public void withdraw(Amount amount, Date date) {
+        throwExceptionWhenAmountIsNegative(amount);
+        throwExceptionIfWithdrawIsSuperiorToBalance(amount);
+        balance.minus(amount);
+
+        Operation operation = new Operation(OperationType.WITHDRAW, date, amount);
+        operationList.add(0, operation);
+
+        statement.add(0, new StatementLine(operation, new Amount(balance.value)));
     }
 
     private void throwExceptionWhenAmountIsNegative(Amount amount) {
@@ -46,5 +56,9 @@ public class Account {
 
     public List<Operation> getOperationList() {
         return this.operationList;
+    }
+
+    public void printStatement(StatementPrinter printer) {
+        printer.print(this.statement);
     }
 }

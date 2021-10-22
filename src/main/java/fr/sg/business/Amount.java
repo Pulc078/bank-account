@@ -11,8 +11,8 @@ public class Amount {
         this.value = value;
     }
 
-    public void add(Amount amount) {
-        this.value = this.value.add(amount.value);
+    public BigDecimal getValue() {
+        return this.value;
     }
 
 }

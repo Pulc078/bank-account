@@ -1,8 +1,13 @@
 package fr.sg.business;
 
+import fr.sg.infra.ConsolePrinter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +16,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class UserCaseTest {
 
     Account account;
+    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
+    private static final String STATEMENT_HEADER = "date       | operation   | amount    | balance";
+
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+
+    @BeforeEach
+    public void init() {
+        System.setOut(new PrintStream(outputStreamCaptor));
+    }
 
     @Test
     public void should_create_a_account_with_balance_of_zero() {
@@ -170,36 +185,61 @@ public class UserCaseTest {
 
         //Then
         assertEquals(2, account.getOperationList().size());
-        assertEquals(withdraw.value, account.getOperationList().get(1).getAmount().value);
-        assertEquals(OperationType.WITHDRAW, account.getOperationList().get(1).getOperationType());
-        assertEquals(date, account.getOperationList().get(1).getDate());
+        assertEquals(withdraw.value, account.getOperationList().get(0).getAmount().value);
+        assertEquals(OperationType.WITHDRAW, account.getOperationList().get(0).getOperationType());
+        assertEquals(date, account.getOperationList().get(0).getDate());
     }
 
+
     @Test
-    public void deposing_100_then_withdraw_100_should_add_2_operation_in_chronological_order() {
+    public void printing_statement_from_empty_account_should_print_only_header() {
+        // Given
+        Balance balance = new Balance();
+        account = new Account(balance);
+
+        // When
+        account.printStatement(new ConsolePrinter());
+
+        // Then
+        assertEquals(STATEMENT_HEADER.length(), outputStreamCaptor.toString().trim().length());
+    }
+
+
+    @Test
+    public void printing_statement_from_account_with_operation_should_print_all_operation() {
+        // Given
         //Given
         Balance balance = new Balance();
         account = new Account(balance);
+
         Amount deposit = new Amount(new BigDecimal(100));
         Date dateDepo = new Date();
         account.deposit(deposit, dateDepo);
 
         Date dateWith = new Date();
         Amount withdraw = new Amount(new BigDecimal(10));
-
-        //When
         account.withdraw(withdraw, dateWith);
 
-        //Then
-        assertEquals(2, account.getOperationList().size());
 
-        assertEquals(deposit.value, account.getOperationList().get(1).getAmount().value);
-        assertEquals(OperationType.DEPOSIT, account.getOperationList().get(1).getOperationType());
-        assertEquals(dateDepo, account.getOperationList().get(1).getDate());
+        // When
+        account.printStatement(new ConsolePrinter());
 
-        assertEquals(withdraw.value, account.getOperationList().get(0).getAmount().value);
-        assertEquals(OperationType.WITHDRAW, account.getOperationList().get(0).getOperationType());
-        assertEquals(dateWith, account.getOperationList().get(0).getDate());
+        StringBuilder builder = new StringBuilder();
+        builder.append(STATEMENT_HEADER).append("\r\n");
+
+        for (StatementLine statementLine : account.statement.getStatementLines()) {
+            builder.append(sdf.format(statementLine.getDate()))
+                    .append(" | ")
+                    .append(statementLine.getType().toString())
+                    .append("    | ")
+                    .append(statementLine.getAmount().value)
+                    .append("    | ")
+                    .append(statementLine.getBalance().value)
+                    .append("\r");
+        }
+
+        // Then
+        assertEquals(builder.toString().length(), outputStreamCaptor.toString().trim().length());
     }
 
 }
