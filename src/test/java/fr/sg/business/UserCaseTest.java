@@ -20,4 +20,18 @@ public class UserCaseTest {
         //Then
         assertEquals(account.getBalance(), balance);
     }
+
+    @Test
+    public void should_create_a_account_with_balance_of_100(){
+        //Given
+        Account account;
+        BigDecimal value = new BigDecimal(100);
+        Balance balance = new Balance(value);
+
+        //When
+        account = new Account(balance);
+
+        //Then
+        assertEquals(account.getBalance(), balance);
+    }
 }
