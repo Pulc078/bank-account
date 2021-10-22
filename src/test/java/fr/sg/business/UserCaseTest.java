@@ -3,6 +3,7 @@ package fr.sg.business;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,11 +29,11 @@ public class UserCaseTest {
         //Given
         Balance balance = new Balance();
         account = new Account(balance);
-
+        Date date = new Date();
         Amount deposit = new Amount(new BigDecimal(100));
 
         //When
-        account.deposit(deposit);
+        account.deposit(deposit, date);
 
         //Then
         assertEquals(new BigDecimal(100), account.getBalance().value);
@@ -43,11 +44,11 @@ public class UserCaseTest {
         //Given
         Balance balance = new Balance();
         account = new Account(balance);
-
+        Date date = new Date();
         Amount deposit = new Amount(new BigDecimal("210.2"));
 
         //When
-        account.deposit(deposit);
+        account.deposit(deposit, date);
 
         //Then
         assertEquals(new BigDecimal("210.2"), account.getBalance().value);
@@ -58,11 +59,11 @@ public class UserCaseTest {
         //Given
         Balance balance = new Balance();
         account = new Account(balance);
-
+        Date date = new Date();
         Amount deposit = new Amount(new BigDecimal(-100));
 
         //Then
-        assertThrows(UnauthorizedOperationException.class, () -> account.deposit(deposit));
+        assertThrows(UnauthorizedOperationException.class, () -> account.deposit(deposit, date));
     }
 
     @Test
@@ -71,8 +72,8 @@ public class UserCaseTest {
         Balance balance = new Balance();
         account = new Account(balance);
         Amount deposit = new Amount(new BigDecimal(100));
-        account.deposit(deposit);
-
+        Date date = new Date();
+        account.deposit(deposit, date);
         Amount withdraw = new Amount(new BigDecimal(100));
 
         //When
@@ -88,6 +89,7 @@ public class UserCaseTest {
         Balance balance = new Balance();
         account = new Account(balance);
 
+        //When
         Amount withdraw = new Amount(new BigDecimal(100));
 
         //Then
@@ -101,8 +103,10 @@ public class UserCaseTest {
         Balance balance = new Balance();
         account = new Account(balance);
         Amount deposit = new Amount(new BigDecimal(1000));
-        account.deposit(deposit);
+        Date date = new Date();
+        account.deposit(deposit, date);
 
+        //When
         Amount withdraw = new Amount(new BigDecimal(-100));
 
         //Then
@@ -110,5 +114,22 @@ public class UserCaseTest {
     }
 
 
+    @Test
+    public void should_add_an_operation_to_the_account_when_deposing_100() {
+        //Given
+        Balance balance = new Balance();
+        account = new Account(balance);
+        Amount deposit = new Amount(new BigDecimal(1000));
+        Date date = new Date();
+
+        //When
+        account.deposit(deposit, date);
+
+        //Then
+        assertEquals(1, account.getOperationList().size());
+        assertEquals(deposit.value, account.getOperationList().get(0).getAmount().value);
+        assertEquals(OperationType.DEPOSIT, account.getOperationList().get(0).getOperationType());
+        assertEquals(date, account.getOperationList().get(0).getDate());
+    }
 
 }
