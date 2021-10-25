@@ -4,8 +4,8 @@ import java.util.Date;
 
 public class StatementLine {
     Operation operation;
-    Amount balance;
-    public StatementLine(Operation operation, Amount balance) {
+    Balance balance;
+    public StatementLine(Operation operation, Balance balance) {
         this.operation = operation;
         this.balance = balance;
     }
@@ -22,7 +22,7 @@ public class StatementLine {
        return operation.getAmount();
     }
 
-    public Amount getBalance() {
+    public Balance getBalance() {
         return balance;
     }
 }

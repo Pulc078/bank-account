@@ -34,4 +34,8 @@ public class Balance{
     public int hashCode() {
         return Objects.hash(value);
     }
+
+    public BigDecimal getValue() {
+        return value;
+    }
 }

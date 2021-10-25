@@ -18,7 +18,7 @@ public class BalanceTest {
         amount = new Amount(new BigDecimal(10));
 
         // When
-        balance.add(amount);
+        balance = balance.add(amount);
 
         // Then
         assertEquals(amount.value, balance.value);
@@ -32,7 +32,7 @@ public class BalanceTest {
         amount = new Amount(new BigDecimal(10));
 
         // When
-        balance.add(amount);
+        balance = balance.minus(amount);
 
         // Then
         assertEquals(BigDecimal.ZERO, balance.value);

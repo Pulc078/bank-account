@@ -52,11 +52,11 @@ public class ConsolePrinterTest {
         // Given
 
         StatementLine deposit = new StatementLine(new Operation(OperationType.DEPOSIT, new Date(), new Amount(new BigDecimal(2))),
-                new Amount(new BigDecimal(2)));
+                new Balance(new BigDecimal(2)));
 
 
         StatementLine withdraw = new StatementLine(new Operation(OperationType.WITHDRAW, new Date(), new Amount(new BigDecimal(2))),
-                new Amount(new BigDecimal(0)));
+                new Balance(new BigDecimal(0)));
 
         List<StatementLine> statementLineList = new LinkedList<>();
         statementLineList.add(deposit);

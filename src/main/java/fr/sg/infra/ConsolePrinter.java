@@ -45,7 +45,7 @@ public class ConsolePrinter implements StatementPrinter {
     }
 
 
-    private void addCurrentBalanceTo(StringBuilder builder, Amount currentBalance) {
+    private void addCurrentBalanceTo(StringBuilder builder, Balance currentBalance) {
         builder.append(currentBalance.getValue());
     }
 }
