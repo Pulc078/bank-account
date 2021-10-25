@@ -61,16 +61,7 @@ public class AccountTest {
     }
 
     @Test
-    public void should_fail_when_deposing_negative_100_on_an_account() {
-        //Given
-        Amount deposit = new Amount(new BigDecimal(-100));
-
-        //Then
-        assertThrows(UnauthorizedOperationException.class, () -> account.deposit(deposit));
-    }
-
-    @Test
-    public void should_withdraw_100_on_an_account_with_100() {
+    public void should_withdraw_100_on_an_account_with_100_and_leave_an_empty_balance() {
         //Given
         Amount deposit = new Amount(new BigDecimal(100));
         account.deposit(deposit);
@@ -93,7 +84,7 @@ public class AccountTest {
     }
 
     @Test
-    public void deposing_100_then_withdraw_100_should_leave_a_balance_of_90() {
+    public void deposing_100_then_withdrawing_10_should_leave_a_balance_of_90() {
         //Given
         Amount deposit = new Amount(new BigDecimal(100));
         Amount withdraw = new Amount(new BigDecimal(10));
@@ -105,19 +96,6 @@ public class AccountTest {
         //Then
         assertEquals(new Balance(new BigDecimal(90)), account.getBalance());
 
-    }
-
-
-    @Test
-    public void should_fail_when_withdrawing_negative_100_from_an_account() {
-        //Given
-        Amount deposit = new Amount(new BigDecimal(1000));
-        Amount withdraw = new Amount(new BigDecimal(-100));
-
-        account.deposit(deposit);
-
-        //Then
-        assertThrows(UnauthorizedOperationException.class, () -> account.withdraw(withdraw));
     }
 
 
@@ -157,6 +135,18 @@ public class AccountTest {
         assertEquals(withdraw.value, fakePrinter.getLines().get(0).getAmount().value);
         assertEquals(OperationType.WITHDRAW, fakePrinter.getLines().get(0).getType());
         assertEquals(Date.from(fixedClock.instant()), fakePrinter.getLines().get(0).getDate());
+    }
+
+
+
+    // Bonus Test : checking if amount is null or negative before operation
+    @Test
+    public void should_fail_when_deposing_negative_100_on_an_account() {
+        //Given
+        Amount deposit = new Amount(new BigDecimal(-100));
+
+        //Then
+        assertThrows(UnauthorizedOperationException.class, () -> account.deposit(deposit));
     }
 
 
