@@ -24,7 +24,7 @@ public class AccountTest {
         account = new Account(balance);
 
         //Then
-        assertEquals(balance, account.getBalance());
+        assertEquals(new Balance(), account.getBalance());
     }
 
     @Test
@@ -39,7 +39,7 @@ public class AccountTest {
         account.deposit(deposit, date);
 
         //Then
-        assertEquals(new Balance(new BigDecimal(100)).value, account.getBalance().value);
+        assertEquals(new Balance(new BigDecimal(100)), account.getBalance());
     }
 
 
@@ -55,7 +55,7 @@ public class AccountTest {
         account.deposit(deposit, date);
 
         //Then
-        assertEquals(new Balance(new BigDecimal("210.2")).value, account.getBalance().value);
+        assertEquals(new Balance(new BigDecimal("210.2")), account.getBalance());
     }
 
     @Test
@@ -84,7 +84,7 @@ public class AccountTest {
         account.withdraw(withdraw, date);
 
         //Then
-        assertEquals(BigDecimal.ZERO, account.getBalance().value);
+        assertEquals(new Balance(), account.getBalance());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class AccountTest {
         account.withdraw(withdraw, dateWith);
 
         //Then
-        assertEquals(new Balance(new BigDecimal(90)).value, account.getBalance().value);
+        assertEquals(new Balance(new BigDecimal(90)), account.getBalance());
 
     }
 
