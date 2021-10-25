@@ -1,34 +1,19 @@
 package fr.sg.business;
 
-import fr.sg.infra.ConsolePrinter;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class UserCaseTest {
+public class AccountTest {
 
     Account account;
-    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-    private static final String STATEMENT_HEADER = "date       | operation   | amount    | balance";
-
-    private static final String DATE_FORMAT = "dd/MM/yyyy";
-    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-
-    @BeforeEach
-    public void init() {
-        System.setOut(new PrintStream(outputStreamCaptor));
-    }
 
     @Test
     public void should_create_a_account_with_balance_of_zero() {
@@ -169,8 +154,8 @@ public class UserCaseTest {
 
         //Then
         assertEquals(1, fakePrinter.getLines().size());
-        assertEquals(deposit.value, fakePrinter.getLines().get(0).getAmount().value);
-        assertEquals(OperationType.DEPOSIT, fakePrinter.getLines().get(0).getType());
+        Assertions.assertEquals(deposit.value, fakePrinter.getLines().get(0).getAmount().value);
+        Assertions.assertEquals(OperationType.DEPOSIT, fakePrinter.getLines().get(0).getType());
         assertEquals(date, fakePrinter.getLines().get(0).getDate());
     }
 
@@ -193,58 +178,6 @@ public class UserCaseTest {
         assertEquals(withdraw.value, fakePrinter.getLines().get(0).getAmount().value);
         assertEquals(OperationType.WITHDRAW, fakePrinter.getLines().get(0).getType());
         assertEquals(date, fakePrinter.getLines().get(0).getDate());
-    }
-
-
-    @Test
-    public void printing_statement_from_empty_account_should_print_only_header() {
-        // Given
-        Balance balance = new Balance();
-        account = new Account(balance);
-
-        // When
-        account.printStatement(new ConsolePrinter());
-
-        // Then
-        assertEquals(STATEMENT_HEADER.length(), outputStreamCaptor.toString().trim().length());
-    }
-
-
-    @Test
-    public void printing_statement_from_account_with_operation_should_print_all_operation() {
-        // Given
-        //Given
-        Balance balance = new Balance();
-        account = new Account(balance);
-
-        Amount deposit = new Amount(new BigDecimal(100));
-        Date dateDepo = new Date();
-        account.deposit(deposit, dateDepo);
-
-        Date dateWith = new Date();
-        Amount withdraw = new Amount(new BigDecimal(10));
-        account.withdraw(withdraw, dateWith);
-
-
-        // When
-        account.printStatement(new ConsolePrinter());
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(STATEMENT_HEADER).append("\r\n");
-
-        for (StatementLine statementLine : account.statement.getStatementLines()) {
-            builder.append(sdf.format(statementLine.getDate()))
-                    .append(" | ")
-                    .append(statementLine.getType().toString())
-                    .append("    | ")
-                    .append(statementLine.getAmount().value)
-                    .append("    | ")
-                    .append(statementLine.getBalance().value)
-                    .append("\r");
-        }
-
-        // Then
-        assertEquals(builder.toString().length(), outputStreamCaptor.toString().trim().length());
     }
 
 
