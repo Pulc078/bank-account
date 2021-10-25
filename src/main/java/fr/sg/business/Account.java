@@ -15,7 +15,7 @@ public class Account {
     }
 
     public Balance getBalance() {
-        return this.balance;
+        return balance;
     }
 
     public void deposit(Amount amount, Date date) {

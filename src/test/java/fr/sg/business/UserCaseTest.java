@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -38,7 +39,7 @@ public class UserCaseTest {
         account = new Account(balance);
 
         //Then
-        assertEquals(new BigDecimal(0), account.getBalance().value);
+        assertEquals(balance, account.getBalance());
     }
 
     @Test
@@ -53,8 +54,9 @@ public class UserCaseTest {
         account.deposit(deposit, date);
 
         //Then
-        assertEquals(new BigDecimal(100), account.getBalance().value);
+        assertEquals(new Balance(new BigDecimal(100)).value, account.getBalance().value);
     }
+
 
     @Test
     public void should_depose_210_2_on_an_account() {
@@ -68,7 +70,7 @@ public class UserCaseTest {
         account.deposit(deposit, date);
 
         //Then
-        assertEquals(new BigDecimal("210.2"), account.getBalance().value);
+        assertEquals(new Balance(new BigDecimal("210.2")).value, account.getBalance().value);
     }
 
     @Test
@@ -101,7 +103,7 @@ public class UserCaseTest {
     }
 
     @Test
-    public void should_fail_when_withdrawing_100_on_an_empty_account() {
+    public void should_fail_when_withdrawing_100_on_an_account_with_balance_of_zero() {
         //Given
         Balance balance = new Balance();
         account = new Account(balance);
@@ -130,7 +132,7 @@ public class UserCaseTest {
         account.withdraw(withdraw, dateWith);
 
         //Then
-        assertEquals(new BigDecimal(90), account.balance.value);
+        assertEquals(new Balance(new BigDecimal(90)).value, account.getBalance().value);
 
     }
 
@@ -159,7 +161,6 @@ public class UserCaseTest {
         account = new Account(balance);
         Amount deposit = new Amount(new BigDecimal(1000));
         Date date = new Date();
-
         FakeStatementPrinter fakePrinter = new FakeStatementPrinter();
 
         //When
@@ -177,11 +178,9 @@ public class UserCaseTest {
     @Test
     public void should_print_one_withdrawal_statement() {
         //Given
-        Balance balance = new Balance();
+        Balance balance = new Balance(new BigDecimal(100));
         account = new Account(balance);
-        Amount deposit = new Amount(new BigDecimal(100));
         Date date = new Date();
-        account.deposit(deposit, date);
         Amount withdraw = new Amount(new BigDecimal(10));
         FakeStatementPrinter fakePrinter = new FakeStatementPrinter();
 
@@ -190,7 +189,7 @@ public class UserCaseTest {
         account.printStatement(fakePrinter);
 
         //Then
-        assertEquals(2, fakePrinter.getLines().size());
+        assertEquals(1, fakePrinter.getLines().size());
         assertEquals(withdraw.value, fakePrinter.getLines().get(0).getAmount().value);
         assertEquals(OperationType.WITHDRAW, fakePrinter.getLines().get(0).getType());
         assertEquals(date, fakePrinter.getLines().get(0).getDate());
@@ -249,17 +248,17 @@ public class UserCaseTest {
     }
 
 
-private static class FakeStatementPrinter implements StatementPrinter {
+    private static class FakeStatementPrinter implements StatementPrinter {
 
-    private final List<StatementLine> lines = new LinkedList<>();
+        private final List<StatementLine> lines = new LinkedList<>();
 
-    public void print(Statement statement) {
-        lines.addAll(statement.getStatementLines());
+        public void print(Statement statement) {
+            lines.addAll(statement.getStatementLines());
+        }
+
+        public List<StatementLine> getLines() {
+            return lines;
+        }
     }
-
-    public List<StatementLine> getLines() {
-        return lines;
-    }
-}
 
 }
