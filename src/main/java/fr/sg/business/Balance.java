@@ -9,11 +9,15 @@ public class Balance {
         value = new BigDecimal(0);
     }
 
-    public void add(Amount amount) {
-        value = this.value.add(amount.value);
+    public Balance( BigDecimal value){
+        this.value = value;
     }
 
-    public void minus(Amount withdraw) {
-        value = this.value.subtract(withdraw.value);
+    public Balance add(Amount amount) {
+        return new Balance(this.value.add(amount.value));
+    }
+
+    public Balance minus(Amount amount) {
+        return new Balance(this.value.subtract(amount.value));
     }
 }

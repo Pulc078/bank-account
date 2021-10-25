@@ -23,7 +23,7 @@ public class Account {
 
     public void deposit(Amount amount, Date date) {
         throwExceptionWhenAmountIsNegative(amount);
-        balance.add(amount);
+        this.balance = balance.add(amount);
 
         Operation operation = new Operation(OperationType.DEPOSIT, date, amount);
         operationList.add(0, operation);
@@ -34,7 +34,7 @@ public class Account {
     public void withdraw(Amount amount, Date date) {
         throwExceptionWhenAmountIsNegative(amount);
         throwExceptionIfWithdrawIsSuperiorToBalance(amount);
-        balance.minus(amount);
+        this.balance = balance.minus(amount);
 
         Operation operation = new Operation(OperationType.WITHDRAW, date, amount);
         operationList.add(0, operation);
