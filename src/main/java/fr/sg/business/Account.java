@@ -49,4 +49,8 @@ public class Account {
             throw new UnauthorizedOperationException();
         }
     }
+
+    public Statement getStatement() {
+        return statement;
+    }
 }

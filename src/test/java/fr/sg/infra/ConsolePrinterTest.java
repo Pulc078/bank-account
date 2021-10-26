@@ -8,6 +8,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,13 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConsolePrinterTest {
 
-
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
     private static final String STATEMENT_HEADER = "date       | operation   | amount    | balance";
-
-    private static final String DATE_FORMAT = "dd/MM/yyyy";
-    private SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-
     private ConsolePrinter consolePrinter;
 
     @BeforeEach
@@ -50,12 +49,15 @@ public class ConsolePrinterTest {
     @Test
     public void printing_statement_from_account_with_operation_should_print_all_operation() {
         // Given
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse("2021-10-21", formatter);
+        Instant timestamp = date.atStartOfDay(ZoneId.of("Europe/Paris")).toInstant();
 
-        StatementLine deposit = new StatementLine(new Operation(OperationType.DEPOSIT, new Date(), new Amount(new BigDecimal(2))),
+        StatementLine deposit = new StatementLine(new Operation(OperationType.DEPOSIT, Date.from(timestamp), new Amount(new BigDecimal(2))),
                 new Balance(new BigDecimal(2)));
 
 
-        StatementLine withdraw = new StatementLine(new Operation(OperationType.WITHDRAW, new Date(), new Amount(new BigDecimal(2))),
+        StatementLine withdraw = new StatementLine(new Operation(OperationType.WITHDRAW, Date.from(timestamp), new Amount(new BigDecimal(2))),
                 new Balance(new BigDecimal(0)));
 
         List<StatementLine> statementLineList = new LinkedList<>();
@@ -66,24 +68,9 @@ public class ConsolePrinterTest {
         // When
         consolePrinter.print(statement);
 
-
-        StringBuilder builder = new StringBuilder();
-        builder.append(STATEMENT_HEADER).append("\r\n");
-
-        for (StatementLine statementLine : statement.getStatementLines()) {
-            builder.append(sdf.format(statementLine.getDate()))
-                    .append(" | ")
-                    .append(statementLine.getType().toString())
-                    .append("    | ")
-                    .append(statementLine.getAmount().getValue())
-                    .append("    | ")
-                    .append(statementLine.getBalance().getValue())
-                    .append("\r");
-        }
-
         // Then
         assertThat(outputStreamCaptor.toString().trim())
                 .isEqualTo("""
-                        date       | operation   | amount    | balance\r\n25/10/2021 | WITHDRAW    | 2    | 0\r\n25/10/2021 | DEPOSIT    | 2    | 2""");
+                        date       | operation   | amount    | balance\r\n21/10/2021 | WITHDRAW    | 2    | 0\r\n21/10/2021 | DEPOSIT    | 2    | 2""");
     }
 }
