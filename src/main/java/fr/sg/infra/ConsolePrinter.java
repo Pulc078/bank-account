@@ -2,6 +2,7 @@ package fr.sg.infra;
 
 import fr.sg.business.*;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,14 +13,18 @@ public class ConsolePrinter implements StatementPrinter {
     private static final String STATEMENT_HEADER = "date       | operation   | amount    | balance";
 
     private final SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+    private final PrintStream printer;
+    private final ByteArrayOutputStream out;
+
+    public ConsolePrinter() {
+        out = new ByteArrayOutputStream();
+        printer = new PrintStream(out, true);
+    }
 
     @Override
     public void print(Statement statement) {
-        PrintStream printer = System.out;
         printer.println(STATEMENT_HEADER);
-
         statement.getStatementLines().forEach(statementLine -> printLine(statementLine, printer));
-
     }
 
     private void printLine(StatementLine statementLine, PrintStream printer) {
@@ -47,6 +52,10 @@ public class ConsolePrinter implements StatementPrinter {
 
     private void addCurrentBalanceTo(StringBuilder builder, Balance currentBalance) {
         builder.append(currentBalance.getValue());
+    }
+
+    public String printedLines() {
+        return out.toString();
     }
 }
 

@@ -13,14 +13,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.time.*;
+import java.text.SimpleDateFormat;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import static fr.sg.business.OperationType.DEPOSIT;
-import static fr.sg.business.OperationType.WITHDRAW;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -31,9 +32,16 @@ public class AccountTransactionSteps {
     private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private final LocalDate date =  LocalDate.parse("2021-10-21", formatter);
+    private final LocalDate date = LocalDate.parse("2021-10-21", formatter);
     private final Instant timestamp = date.atStartOfDay(ZoneId.of("Europe/Paris")).toInstant();
     private final Clock fixedClock = Clock.fixed(timestamp, ZoneId.of("Europe/Paris"));
+
+    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final String STATEMENT_HEADER = "date       | operation   | amount    | balance";
+
+    private final SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+
+    private ConsolePrinter consolePrinter;
 
     @BeforeEach
     void setUp() {
@@ -50,7 +58,8 @@ public class AccountTransactionSteps {
                 case WITHDRAW -> account.withdraw(operationList.get(i).getAmount());
                 case DEPOSIT -> account.deposit(operationList.get(i).getAmount());
             }
-        } {
+        }
+        {
         }
 
         System.setOut(new PrintStream(outputStreamCaptor));
@@ -74,11 +83,11 @@ public class AccountTransactionSteps {
         }
     }
 
-
     @When("The user prints it's statements")
     public void the_user_prints_it_s_statements() {
+        consolePrinter = new ConsolePrinter();
         try {
-            this.account.printStatement(new ConsolePrinter());
+            this.account.printStatement(consolePrinter);
         } catch (Exception e) {
             caughtExceptions.add(e);
         }
@@ -88,7 +97,23 @@ public class AccountTransactionSteps {
     public void the_statement_printing_should_have_the_following_lines(DataTable dataTable) {
         List<StatementLine> statementLines = formatDataTableToListOfStatement(dataTable);
         Statement statement = new Statement(statementLines);
-        assertEquals(statement, account.getStatement());
+
+        StringBuilder expected = new StringBuilder();
+        expected.append(STATEMENT_HEADER).append("\r\n");
+
+        for (StatementLine statementLine : statement.getStatementLines()) {
+            expected.append(sdf.format(statementLine.getDate()))
+                    .append(" | ")
+                    .append(statementLine.getType())
+                    .append("    | ")
+                    .append(statementLine.getAmount().getValue())
+                    .append("    | ")
+                    .append(statementLine.getBalance().getValue())
+                    .append("\r\n");
+        }
+
+        assertEquals(consolePrinter.printedLines(),
+                expected.toString());
     }
 
     @Then("The operation should be accepted")
@@ -112,7 +137,6 @@ public class AccountTransactionSteps {
             assertEquals(operationList.get(i).getAmount(), accountStatement.getAmount());
         }
     }
-
 
     private List<Operation> formatDataTableToListOfOperation(DataTable dataTable) {
         return dataTable.asMaps().stream().map(table -> {

@@ -4,10 +4,7 @@ import fr.sg.business.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -21,13 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConsolePrinterTest {
 
-    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-    private static final String STATEMENT_HEADER = "date       | operation   | amount    | balance";
+    private static final String STATEMENT_HEADER = "date       | operation   | amount    | balance\r\n";
     private ConsolePrinter consolePrinter;
 
     @BeforeEach
     public void init() {
-        System.setOut(new PrintStream(outputStreamCaptor));
         consolePrinter = new ConsolePrinter();
     }
 
@@ -42,7 +37,7 @@ public class ConsolePrinterTest {
         consolePrinter.print(statement);
 
         // Then
-        assertEquals(STATEMENT_HEADER, outputStreamCaptor.toString().trim());
+        assertEquals(STATEMENT_HEADER, consolePrinter.printedLines());
     }
 
 
@@ -69,7 +64,7 @@ public class ConsolePrinterTest {
         consolePrinter.print(statement);
 
         // Then
-        assertThat(outputStreamCaptor.toString().trim())
+        assertThat(consolePrinter.printedLines().trim())
                 .isEqualTo("""
                         date       | operation   | amount    | balance\r\n21/10/2021 | WITHDRAW    | 2    | 0\r\n21/10/2021 | DEPOSIT    | 2    | 2""");
     }
