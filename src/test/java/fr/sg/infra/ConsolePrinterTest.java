@@ -5,11 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,10 +20,16 @@ public class ConsolePrinterTest {
 
     private static final String STATEMENT_HEADER = "date       | operation   | amount    | balance\r\n";
     private ConsolePrinter consolePrinter;
+    private Account account;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final LocalDate date = LocalDate.parse("2021-10-21", formatter);
+    private final Instant timestamp = date.atStartOfDay(ZoneId.of("Europe/Paris")).toInstant();
+    private final Clock fixedClock = Clock.fixed(timestamp, ZoneId.of("Europe/Paris"));
 
     @BeforeEach
     public void init() {
         consolePrinter = new ConsolePrinter();
+        account = new Account(new Balance(), fixedClock);
     }
 
 
@@ -34,7 +40,7 @@ public class ConsolePrinterTest {
         Statement statement = new Statement(statementLineList);
 
         // When
-        consolePrinter.print(statement);
+        account.printStatement(consolePrinter);
 
         // Then
         assertEquals(STATEMENT_HEADER, consolePrinter.printedLines());
@@ -44,28 +50,16 @@ public class ConsolePrinterTest {
     @Test
     public void printing_statement_from_account_with_operation_should_print_all_operation() {
         // Given
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate date = LocalDate.parse("2021-10-21", formatter);
-        Instant timestamp = date.atStartOfDay(ZoneId.of("Europe/Paris")).toInstant();
 
-        StatementLine deposit = new StatementLine(new Operation(OperationType.DEPOSIT, Date.from(timestamp), new Amount(new BigDecimal(2))),
-                new Balance(new BigDecimal(2)));
-
-
-        StatementLine withdraw = new StatementLine(new Operation(OperationType.WITHDRAW, Date.from(timestamp), new Amount(new BigDecimal(2))),
-                new Balance(new BigDecimal(0)));
-
-        List<StatementLine> statementLineList = new LinkedList<>();
-        statementLineList.add(deposit);
-        statementLineList.add(0, withdraw);
-        Statement statement = new Statement(statementLineList);
+        account.deposit(new Amount(new BigDecimal(100)));
+        account.withdraw(new Amount(new BigDecimal(100)));
 
         // When
-        consolePrinter.print(statement);
+        account.printStatement(consolePrinter);
 
         // Then
         assertThat(consolePrinter.printedLines().trim())
                 .isEqualTo("""
-                        date       | operation   | amount    | balance\r\n21/10/2021 | WITHDRAW    | 2    | 0\r\n21/10/2021 | DEPOSIT    | 2    | 2""");
+                        date       | operation   | amount    | balance\r\n21/10/2021 | WITHDRAW    | 100    | 0\r\n21/10/2021 | DEPOSIT    | 100    | 100""");
     }
 }
