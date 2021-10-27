@@ -1,5 +1,6 @@
 package fr.sg.business;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,12 +8,12 @@ public class Statement {
 
     List<StatementLine> statement;
 
-    public Statement(List<StatementLine> statement) {
-        this.statement = statement;
+    public Statement() {
+        this.statement = new ArrayList<>();
     }
 
-    public void add(int i, StatementLine statementLine) {
-        statement.add(i, statementLine);
+    public void add(StatementLine statementLine) {
+        statement.add(0, statementLine);
     }
 
     public List<StatementLine> getStatementLines() {

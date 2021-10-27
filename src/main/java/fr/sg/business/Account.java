@@ -3,16 +3,16 @@ package fr.sg.business;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.util.Date;
-import java.util.LinkedList;
 
 public class Account {
     private final Clock clock;
     Balance balance;
-    Statement statement = new Statement(new LinkedList<>());
+    Statement statement;
 
     public Account(Balance balance, Clock clock) {
         this.balance = balance;
         this.clock = clock;
+        this.statement = new Statement();
     }
 
     public Balance getBalance() {
@@ -23,7 +23,7 @@ public class Account {
         throwExceptionWhenAmountIsNegative(amount);
         this.balance = balance.add(amount);
 
-        statement.add(0, new StatementLine(new Operation(OperationType.DEPOSIT, Date.from(clock.instant()), amount), balance));
+        statement.add(new StatementLine(new Operation(OperationType.DEPOSIT, Date.from(clock.instant()), amount), balance));
     }
 
     public void withdraw(Amount amount) {
@@ -31,7 +31,7 @@ public class Account {
         throwExceptionIfWithdrawIsSuperiorToBalance(amount);
         this.balance = balance.minus(amount);
 
-        statement.add(0, new StatementLine(new Operation(OperationType.WITHDRAW, Date.from(clock.instant()), amount), balance));
+        statement.add(new StatementLine(new Operation(OperationType.WITHDRAW, Date.from(clock.instant()), amount), balance));
     }
 
     public void printStatement(StatementPrinter printer) {

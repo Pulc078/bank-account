@@ -59,9 +59,6 @@ public class AccountTransactionSteps {
                 case DEPOSIT -> account.deposit(operationList.get(i).getAmount());
             }
         }
-        {
-        }
-
         System.setOut(new PrintStream(outputStreamCaptor));
     }
 
@@ -96,12 +93,11 @@ public class AccountTransactionSteps {
     @Then("The statement printing should have the following lines")
     public void the_statement_printing_should_have_the_following_lines(DataTable dataTable) {
         List<StatementLine> statementLines = formatDataTableToListOfStatement(dataTable);
-        Statement statement = new Statement(statementLines);
 
         StringBuilder expected = new StringBuilder();
         expected.append(STATEMENT_HEADER).append("\r\n");
 
-        for (StatementLine statementLine : statement.getStatementLines()) {
+        for (StatementLine statementLine : statementLines) {
             expected.append(sdf.format(statementLine.getDate()))
                     .append(" | ")
                     .append(statementLine.getType())

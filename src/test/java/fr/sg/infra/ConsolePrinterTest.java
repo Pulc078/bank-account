@@ -36,9 +36,6 @@ public class ConsolePrinterTest {
     @Test
     public void printing_statement_from_empty_account_should_print_only_header() {
         // Given
-        List<StatementLine> statementLineList = new LinkedList<>();
-        Statement statement = new Statement(statementLineList);
-
         // When
         account.printStatement(consolePrinter);
 
