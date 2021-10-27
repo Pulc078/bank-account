@@ -1,6 +1,8 @@
 package fr.sg.infra;
 
-import fr.sg.business.*;
+import fr.sg.business.Account;
+import fr.sg.business.Amount;
+import fr.sg.business.Balance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,8 +12,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;

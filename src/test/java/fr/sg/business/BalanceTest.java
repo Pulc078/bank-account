@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BalanceTest {
 
-    Balance balance;
-    Amount amount;
+    private Balance balance;
+    private Amount amount;
 
     @Test
     void should_add_10_to_balance_value() {
@@ -21,7 +21,7 @@ public class BalanceTest {
         balance = balance.add(amount);
 
         // Then
-        assertEquals(amount.value, balance.value);
+        assertEquals(amount.getValue(), balance.getValue());
     }
 
 
@@ -35,6 +35,6 @@ public class BalanceTest {
         balance = balance.minus(amount);
 
         // Then
-        assertEquals(BigDecimal.ZERO, balance.value);
+        assertEquals(BigDecimal.ZERO, balance.getValue());
     }
 }

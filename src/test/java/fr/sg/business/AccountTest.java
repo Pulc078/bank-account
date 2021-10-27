@@ -1,6 +1,5 @@
 package fr.sg.business;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +7,6 @@ import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -130,7 +128,6 @@ public class AccountTest {
         //Then
         assertEquals(account.getStatement().getStatementLines(), fakePrinter.getLines());
     }
-
 
 
     // Bonus Test : checking if amount is null or negative before operation

@@ -12,11 +12,11 @@ public class StatementLine {
     }
 
     public Date getDate() {
-        return operation.date;
+        return operation.getDate();
     }
 
     public OperationType getType() {
-        return operation.operationType;
+        return operation.getOperationType();
     }
 
     public Amount getAmount() {

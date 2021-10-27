@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class Operation {
 
-    Amount amount;
-    OperationType operationType;
-    Date date;
+    private Amount amount;
+    private OperationType operationType;
+    private Date date;
 
     public Operation(OperationType type, Date date, Amount amount) {
         this.amount = amount;

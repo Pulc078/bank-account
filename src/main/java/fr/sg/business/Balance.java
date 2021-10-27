@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Balance{
-    BigDecimal value;
+    private BigDecimal value;
 
     public Balance() {
         value = new BigDecimal(0);
@@ -15,11 +15,11 @@ public class Balance{
     }
 
     public Balance add(Amount amount) {
-        return new Balance(this.value.add(amount.value));
+        return new Balance(this.value.add(amount.getValue()));
     }
 
     public Balance minus(Amount amount) {
-        return new Balance(this.value.subtract(amount.value));
+        return new Balance(this.value.subtract(amount.getValue()));
     }
 
     @Override

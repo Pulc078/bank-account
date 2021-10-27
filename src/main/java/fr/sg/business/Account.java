@@ -6,8 +6,8 @@ import java.util.Date;
 
 public class Account {
     private final Clock clock;
-    Balance balance;
-    Statement statement;
+    private Balance balance;
+    private Statement statement;
 
     public Account(Balance balance, Clock clock) {
         this.balance = balance;
@@ -39,13 +39,13 @@ public class Account {
     }
 
     private void throwExceptionWhenAmountIsNegative(Amount amount) {
-        if (amount.value.compareTo(BigDecimal.ZERO) < 0) {
+        if (amount.getValue().compareTo(BigDecimal.ZERO) < 0) {
             throw new UnauthorizedOperationException();
         }
     }
 
     private void throwExceptionIfWithdrawIsSuperiorToBalance(Amount withdraw) {
-        if (withdraw.value.compareTo(balance.value) > 0) {
+        if (withdraw.getValue().compareTo(balance.getValue()) > 0) {
             throw new UnauthorizedOperationException();
         }
     }
