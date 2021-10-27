@@ -111,10 +111,7 @@ public class AccountTest {
         account.printStatement(fakePrinter);
 
         //Then
-        assertEquals(1, fakePrinter.getLines().size());
-        Assertions.assertEquals(deposit.value, fakePrinter.getLines().get(0).getAmount().value);
-        Assertions.assertEquals(OperationType.DEPOSIT, fakePrinter.getLines().get(0).getType());
-        assertEquals(Date.from(fixedClock.instant()), fakePrinter.getLines().get(0).getDate());
+        assertEquals(account.getStatement().getStatementLines(), fakePrinter.getLines());
     }
 
 
@@ -131,10 +128,7 @@ public class AccountTest {
         account.printStatement(fakePrinter);
 
         //Then
-        assertEquals(1, fakePrinter.getLines().size());
-        assertEquals(withdraw.value, fakePrinter.getLines().get(0).getAmount().value);
-        assertEquals(OperationType.WITHDRAW, fakePrinter.getLines().get(0).getType());
-        assertEquals(Date.from(fixedClock.instant()), fakePrinter.getLines().get(0).getDate());
+        assertEquals(account.getStatement().getStatementLines(), fakePrinter.getLines());
     }
 
 
